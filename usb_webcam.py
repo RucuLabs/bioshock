@@ -19,7 +19,7 @@ def detect():
 # uses fswebcam
 def take_picture(path):
     filename = time.strftime("%Y%m%d-%H%M%S") + ".jpg"
-    command = "fswebcam -r 1280x720 --no-banner " + os.path.join(directory, filename)
+    command = "fswebcam -r 1280x720 --no-banner " + os.path.join(path, filename)
     try:
         os.system(command)
         print(f"Webcam: Taking picture {filename}")
