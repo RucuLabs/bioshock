@@ -1,6 +1,8 @@
 import usb_webcam
 import sys
 import time
+import csv
+import Adafruit_DHT
 
 BANNER = """
 oooooooooo.   o8o             .oooooo..o oooo                            oooo
@@ -23,7 +25,20 @@ directory = "./usb_pictures/"
 num_photos = int(input("Indica el número de fotos: "))
 interval = int(input("Indica el intervalo (segundos): "))
 
+SENSOR = Adafruit_DHT.AM2302
+PIN = 4
+HEADERS = ['id', 'time', 'temperatura', 'humedad', 'foto']
+FILE_NAME = 'data.csv'
+
 print("Iniciando captura de fotos")
-for i in range(num_photos):
-    usb_webcam.take_picture(directory)
-    time.sleep(interval)
+
+with open(FILE_NAME, 'w', newline='') as csv_file:
+    for i in range(num_photos):
+        writer = csv.writer(csv_file)
+        writer.writerow(HEADERS)
+        timestamp = time.strftime("%Y%m%d-%H%M%S")
+        usb_webcam.take_picture(directory, i)
+        humidity, temperature = Adafruit_DHT.read_retry(SENSOR, PIN)
+        row = [i, timestamp, temperature, humidity, i+'.jpg']
+        writer.writerow(row)
+        time.sleep(interval)
