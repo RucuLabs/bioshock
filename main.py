@@ -18,6 +18,9 @@ while True:
             os.mkdir(directory)
             os.mkdir(directory+'/pictures')
             break
+        except:
+            print("Error creando directorio, intenta de nuevo")
+            continue
     print(f"{directory} ya existe, ocupa otro nombre")
 
 while True:
@@ -26,6 +29,9 @@ while True:
         interval = int(input("Indica el intervalo (segundos): "))
         if num_photos >= 0 and interval >= 0:
             break
+    except:
+        print("Error de input, intenta de nuevo")
+        continue
     print("Ingresa un número de registros y tiempo de intervalo válidos")
 
 SENSOR = Adafruit_DHT.AM2302
