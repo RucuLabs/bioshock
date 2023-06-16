@@ -44,7 +44,7 @@ print("Iniciando monitoreo")
 
 with open(FILE_NAME, 'w', newline='') as csv_file:
     writer = csv.writer(csv_file)
-    wirter.writerow(HEADERS)
+    writer.writerow(HEADERS)
     for i in range(num_photos):
         timestamp = time.strftime("%Y%m%d-%H%M%S")
         usb_webcam.take_picture(directory+'/pictures/', str(i))
