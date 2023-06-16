@@ -49,7 +49,7 @@ with open(FILE_NAME, 'w', newline='') as csv_file:
         timestamp = time.strftime("%Y%m%d-%H%M%S")
         usb_webcam.take_picture(directory+'/pictures/', str(i))
         humidity, temperature = Adafruit_DHT.read_retry(SENSOR, PIN)
-        row = [i, timestamp, temperature, humidity, i+'.jpg']
+        row = [i, timestamp, temperature, humidity, str(i)+'.jpg']
         writer.writerow(row)
         time.sleep(interval)
 
