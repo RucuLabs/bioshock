@@ -17,8 +17,8 @@ def detect():
 # take_picture: path(str) -> void
 # takes a picture from the usb webcam and saves it to path
 # uses fswebcam
-def take_picture(path):
-    filename = time.strftime("%Y%m%d-%H%M%S") + ".jpg"
+def take_picture(path, filename):
+    filename = filename + ".jpg"
     command = "fswebcam -r 1280x720 --no-banner " + os.path.join(path, filename)
     try:
         os.system(command)
