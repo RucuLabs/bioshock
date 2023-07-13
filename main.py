@@ -8,7 +8,9 @@ from dumb import BANNER
 from w1thermsensor import W1ThermSensor
 
 print(BANNER)
-if not usb_webcam.detect():
+
+cams = usb_webcam.detect()
+if not cams:
     print("Exiting")
     sys.exit(0)
 
@@ -40,6 +42,7 @@ SENSOR_2 = W1ThermSensor()
 SENSOR_1_PIN = 5
 HEADERS = ['id', 'time', 'temperatura', 'humedad', 'temp_interna', 'foto']
 FILE_NAME = f'{directory}/data.csv'
+RESOLUTION = "1280x720"
 
 print(f"Proyecto {directory}")
 print("Iniciando monitoreo")
@@ -49,7 +52,8 @@ with open(FILE_NAME, 'w', newline='') as csv_file:
     writer.writerow(HEADERS)
     for i in range(num_photos):
         timestamp = time.strftime("%Y%m%d-%H%M%S")
-        usb_webcam.take_picture(directory+'/pictures/', str(i))
+        for cam in cams:
+            usb_webcam.take_picture(directory+'/pictures/', RESOLUTION, cam, str(i))
         humidity, temperature = Adafruit_DHT.read_retry(SENSOR_1, SENSOR_1_PIN)
         inner_temperature = SENSOR_2.get_temperature()
         row = [i, timestamp, temperature, humidity, inner_temperature, str(i)+'.jpg']
