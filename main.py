@@ -37,7 +37,7 @@ while True:
 
 SENSOR_1 = Adafruit_DHT.AM2302
 SENSOR_2 = W1ThermSensor()
-SENSOR_1_PIN = 4
+SENSOR_1_PIN = 5
 HEADERS = ['id', 'time', 'temperatura', 'humedad', 'temp_interna', 'foto']
 FILE_NAME = f'{directory}/data.csv'
 
