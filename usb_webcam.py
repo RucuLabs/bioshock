@@ -2,26 +2,32 @@ import subprocess
 import os
 import time
 
-# detect: void -> bool
-# indicates if usb webcam is connected to the rpi
+# detect: void -> list / false
+# indicates if videocams are connected to the rpi
 def detect():
     try:
-        output = subprocess.getoutput("lsusb")
-        webcam = "webcam" in output.lower()
-        print(f"Webcam: Detected {webcam}")
-        return webcam
+        output = subprocess.getoutput("ls /dev/video[0-9]")
+        output = output.split()
+        cams_n = len(output)
+        if cams_n == 0:
+            print("No cams detected")
+            return False
+        else:
+            print(f"{cams_n} cam(s) detected.")
+            return output
     except:
-        print("Webcam: Error detecting webcam")
+        print("Error detecting cams")
         return False
 
 # take_picture: path(str) -> void
 # takes a picture from the usb webcam and saves it to path
 # uses fswebcam
-def take_picture(path, filename):
-    filename = filename + ".jpg"
-    command = "fswebcam -r 1280x720 --jpeg --no-banner " + os.path.join(path, filename)
+def take_picture(path, resolution, cam_name, filename):
+    cam_number = cam_name[-1]
+    filename = f"cam{cam_number}-{filename}.jpg"
+    command = f"fswebcam -d {cam_name} -r {resolution} --no-banner " + os.path.join(path, filename)
     try:
         os.system(command)
-        print(f"Webcam: Taking picture {filename}")
+        print(f"Webcam: Taking picture on cam{cam_number}: {filename}")
     except:
-        print(f"Webcam: Error taking picture {filename}")
+        print(f"Webcam: Error taking picture on cam{cam_number}: {filename}")
