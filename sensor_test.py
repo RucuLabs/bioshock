@@ -3,7 +3,7 @@ import board
 import adafruit_dht
 from adafruit_onewire.bus import OneWireBus
 from adafruit_ds18x20 import DS18X20
-
+import ds18x20
 # Initial the dht device, with data pin connected to:
 dhtDevice = adafruit_dht.DHT22(board.D18)
 ow_bus = OneWireBus(board.D4)
@@ -18,9 +18,7 @@ while True:
         temperature_c = dhtDevice.temperature
         temperature_f = temperature_c * (9 / 5) + 32
         humidity = dhtDevice.humidity
-        devices = ow_bus.scan()
-        for device in devices:
-            print("ROM = {} \tFamily = 0x{:02x}".format([hex(i) for i in device.rom], device.family_code))
+        print(ds18x20.gettemp('28-3c01d607a2d3'))
         print(
             "Temp: {:.1f} F / {:.1f} C    Humidity: {}% ".format(
                 temperature_f, temperature_c, humidity
