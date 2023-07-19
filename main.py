@@ -4,6 +4,9 @@ import time
 import csv
 import os
 from dumb import BANNER
+import adafruit_dht
+import ds18x20
+import board
 
 print(BANNER)
 
@@ -11,6 +14,10 @@ cams = usb_webcam.detect()
 if not cams:
     print("Exiting")
     sys.exit(0)
+
+# Initial the dht device, with data pin connected to:
+AM2302 = adafruit_dht.DHT22(board.D18)
+DS18X20_id = '28-3c01d607a2d3'
 
 while True:
     directory = input("Ingresa el nombre del proyecto: ")
@@ -49,8 +56,8 @@ with open(FILE_NAME, 'w', newline='') as csv_file:
         timestamp = time.strftime("%Y%m%d-%H%M%S")
         for cam in cams:
             usb_webcam.take_picture(directory+'/pictures/', RESOLUTION, cam, str(i))
-        humidity, temperature = 0,0
-        inner_temperature = 0
+        humidity, temperature = AM2302.humidty, AM2302.temperature
+        inner_temperature = '{:.3f}'.format(ds18x20.gettemp(id)/float(1000))
         row = [i, timestamp, temperature, humidity, inner_temperature, str(i)+'.jpg']
         writer.writerow(row)
         time.sleep(interval)
