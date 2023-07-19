@@ -2,7 +2,7 @@
 def gettemp(id):
   mytemp = ''
   filename = 'w1_slave'
-  f = open('/sys/bus/w1/devices/' + id + '/' + filename, 'r')
+  f = open('/sys/bus/w1/devices/' + str(id) + '/' + filename, 'r')
   line = f.readline() # read 1st line
   crc = line.rsplit(' ',1)
   crc = crc[1].replace('\n', '')

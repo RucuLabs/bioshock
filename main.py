@@ -57,7 +57,7 @@ with open(FILE_NAME, 'w', newline='') as csv_file:
         for cam in cams:
             usb_webcam.take_picture(directory+'/pictures/', RESOLUTION, cam, str(i))
         humidity, temperature = AM2302.humidity, AM2302.temperature
-        inner_temperature = '{:.3f}'.format(ds18x20.gettemp(id)/float(1000))
+        inner_temperature = '{:.3f}'.format(ds18x20.gettemp(DS18X20_id)/float(1000))
         row = [i, timestamp, temperature, humidity, inner_temperature, str(i)+'.jpg']
         writer.writerow(row)
         time.sleep(interval)
