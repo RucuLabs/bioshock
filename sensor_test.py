@@ -6,7 +6,7 @@ from adafruit_ds18x20 import DS18X20
 import ds18x20
 # Initial the dht device, with data pin connected to:
 dhtDevice = adafruit_dht.DHT22(board.D18)
-ow_bus = OneWireBus(board.D4)
+#ow_bus = OneWireBus(board.D4)
 # you can pass DHT22 use_pulseio=False if you wouldn't like to use pulseio.
 # This may be necessary on a Linux single board computer like the Raspberry Pi,
 # but it will not work in CircuitPython.
