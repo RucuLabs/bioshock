@@ -2,10 +2,8 @@ import usb_webcam
 import sys
 import time
 import csv
-import Adafruit_DHT
 import os
 from dumb import BANNER
-from w1thermsensor import W1ThermSensor
 
 print(BANNER)
 
@@ -37,9 +35,6 @@ while True:
         continue
     print("Ingresa un número de registros y tiempo de intervalo válidos")
 
-SENSOR_1 = Adafruit_DHT.AM2302
-SENSOR_2 = W1ThermSensor()
-SENSOR_1_PIN = 5
 HEADERS = ['id', 'time', 'temperatura', 'humedad', 'temp_interna', 'foto']
 FILE_NAME = f'{directory}/data.csv'
 RESOLUTION = "1280x720"
@@ -54,8 +49,8 @@ with open(FILE_NAME, 'w', newline='') as csv_file:
         timestamp = time.strftime("%Y%m%d-%H%M%S")
         for cam in cams:
             usb_webcam.take_picture(directory+'/pictures/', RESOLUTION, cam, str(i))
-        humidity, temperature = Adafruit_DHT.read_retry(SENSOR_1, SENSOR_1_PIN)
-        inner_temperature = SENSOR_2.get_temperature()
+        humidity, temperature = 0,0
+        inner_temperature = 0
         row = [i, timestamp, temperature, humidity, inner_temperature, str(i)+'.jpg']
         writer.writerow(row)
         time.sleep(interval)
