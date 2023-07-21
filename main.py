@@ -1,12 +1,8 @@
-import usb_webcam
-import sys
-import time
-import csv
-import os
-from dumb import BANNER
-import adafruit_dht
-import ds18x20
-import board
+import sys, time, csv, os
+import adafruit_dht, board
+import tools.cameras
+import tools.ds18x20
+from tools.art import BANNER
 
 print(BANNER)
 

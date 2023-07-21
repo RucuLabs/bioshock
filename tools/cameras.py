@@ -19,7 +19,7 @@ def detect():
         print("Error detecting cams")
         return False
 
-# take_picture: path(str) -> void
+# take_picture: path(str) resolution(str) cam_name(str) filename -> void
 # takes a picture from the usb webcam and saves it to path
 # uses fswebcam
 def take_picture(path, resolution, cam_name, filename):
