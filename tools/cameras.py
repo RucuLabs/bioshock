@@ -1,19 +1,4 @@
-import subprocess
-import os
-import time
-
-RESOLUTIONS_16_9 = {
-    "360p": "640x360",
-    "480p": "854x480",
-    "540p": "960x540",
-    "576p": "1024x576",
-    "720p": "1280x720",
-    "768p": "1366x768",
-    "900p": "1600x900",
-    "FullHD": "1920x1080",
-    "1440p": "2560x1440",
-    "4K": "3840x2160"
-}
+import os, subprocess
 
 # detect: void -> list / false
 # indicates if videocams are connected to the rpi
@@ -32,9 +17,8 @@ def detect():
         print("Error detecting cams")
         return False
 
-# take_picture: path(str) resolution(str) cam_name(str) filename -> void
-# takes a picture from the usb webcam and saves it to path
-# uses fswebcam
+# take_picture: path(str) resolution(str) cam_name(str) filename(str) -> void
+# takes a picture (fswebcam) from the usb webcam and saves it to path
 def take_picture(path, resolution, cam_name, filename):
     cam_number = cam_name[-1]
     filename = f"cam{cam_number}-{filename}.jpg"

@@ -1,62 +1,23 @@
 import sys, time, csv, os
-import adafruit_dht, board
 import tools.cameras
-import tools.ds18x20
+import tools.interaction
+import tools.monitoring
 from tools.art import BANNER
 
 print(BANNER)
 
-cams = usb_webcam.detect()
+# detect cameras
+cams = cameras.detect()
 if not cams:
     print("Exiting")
     sys.exit(0)
 
-# Initial the dht device, with data pin connected to:
-AM2302 = adafruit_dht.DHT22(board.D18)
-DS18X20_id = '28-3c01d607a2d3'
+# user interaction
+monitoring_name, monitoring_path = interaction.ask_for_monitoring_name()
+num_photos, interval = interaction.ask_for_settings()
+resolution = interaction.ask_for_resolution()
 
-while True:
-    directory = input("Ingresa el nombre del proyecto: ")
-    if not os.path.exists(directory):
-        try:
-            os.mkdir(directory)
-            os.mkdir(directory+'/pictures')
-            break
-        except:
-            print("Error creando directorio, intenta de nuevo")
-            continue
-    print(f"{directory} ya existe, ocupa otro nombre")
+# start monitoring
+monitoring.start_monitoring(monitoring_path=monitoring_path, monitoring_name=monitoring_name, cams=cams, resolution=resolution, num_photos=num_photos, interval=interval)
 
-while True:
-    try:
-        num_photos = int(input("Indica el número de registros: "))
-        interval = int(input("Indica el intervalo (segundos): "))
-        if num_photos >= 0 and interval >= 0:
-            break
-    except:
-        print("Error de input, intenta de nuevo")
-        continue
-    print("Ingresa un número de registros y tiempo de intervalo válidos")
-
-HEADERS = ['id', 'time', 'temperatura', 'humedad', 'temp_interna', 'foto']
-FILE_NAME = f'{directory}/data.csv'
-RESOLUTION = "1280x720"
-
-print(f"Proyecto {directory}")
-print("Iniciando monitoreo")
-
-with open(FILE_NAME, 'w', newline='') as csv_file:
-    writer = csv.writer(csv_file)
-    writer.writerow(HEADERS)
-    for i in range(num_photos):
-        timestamp = time.strftime("%Y%m%d-%H%M%S")
-        for cam in cams:
-            usb_webcam.take_picture(directory+'/pictures/', RESOLUTION, cam, str(i))
-        humidity, temperature = AM2302.humidity, AM2302.temperature
-        inner_temperature = '{:.3f}'.format(ds18x20.gettemp(DS18X20_id)/float(1000))
-        row = [i, timestamp, temperature, humidity, inner_temperature, str(i)+'.jpg']
-        writer.writerow(row)
-        time.sleep(interval)
-
-print("Monitoreo terminado")
-sys.exit(1)
+sys.exit(0)
