@@ -2,6 +2,19 @@ import subprocess
 import os
 import time
 
+RESOLUTIONS_16_9 = {
+    "360p": "640x360",
+    "480p": "854x480",
+    "540p": "960x540",
+    "576p": "1024x576",
+    "720p": "1280x720",
+    "768p": "1366x768",
+    "900p": "1600x900",
+    "FullHD": "1920x1080",
+    "1440p": "2560x1440",
+    "4K": "3840x2160"
+}
+
 # detect: void -> list / false
 # indicates if videocams are connected to the rpi
 def detect():
