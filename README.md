@@ -1,6 +1,4 @@
-# bioshock
-Sistema de monitoreo para biomateriales.
+# BioShock: Biomaterial Monitoring System
 
-### Installing
-1. Install ADAFruit drivers
-2. Install fswebcam
+## Overview
+BioShock is a Python-based program designed to monitor biomaterials using an array of cameras and sensors. This system enables real-time data collection, image capture, and analysis to provide comprehensive insights into the behavior of biomaterials under various conditions.
