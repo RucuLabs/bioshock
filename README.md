@@ -17,6 +17,11 @@ BioShock is a Python-based program designed to monitor biomaterials using an arr
 - Humidity Sensor
 - Pi Camera or webcam
 
+## Dependencies
+- Python 3
+- Blinka
+- Adafruit
+
 ## Usage
 1. Run monitoring.py
 2. Run timelapse.py
