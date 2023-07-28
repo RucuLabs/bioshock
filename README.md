@@ -11,3 +11,8 @@ BioShock is a Python-based program designed to monitor biomaterials using an arr
 3. Automated Data Collection: With its defined interval functionality, BioShock automatically takes multiple images over a specific timeframe, reducing manual effort and ensuring continuous monitoring.
 
 4. Time-Lapse Generation: By leveraging the collected images, BioShock generates visually insightful time-lapses, enabling users to visualize and analyze the biomaterial's behavior over time.
+
+## Hardware
+- Raspberry Pi 4 (will create a fork that supports 3)
+- Humidity Sensor
+- Pi Camera or webcam
