@@ -10,7 +10,7 @@ print(BANNER)
 cams = cameras.detect()
 if not cams:
     print("Exiting")
-    sys.exit(0)
+    sys.exit(1)
 
 # user interaction
 monitoring_name, monitoring_path = interaction.ask_for_monitoring_name()
