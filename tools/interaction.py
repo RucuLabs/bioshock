@@ -29,7 +29,7 @@ def ask_for_monitoring_name():
             except:
                 print("Couldn't create the monitoring session folder, try again.")
                 continue
-        print(f"{directory} already exists, choose another name.")
+        print(f"{monitoring_name} already exists, choose another name.")
 
 def ask_for_settings():
     while True:

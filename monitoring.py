@@ -1,7 +1,7 @@
 import sys, time, csv, os
-import tools.cameras
-import tools.interaction
-import tools.monitoring
+import tools.cameras as cameras
+import tools.interaction as interaction
+import tools.monitoring as monitoring
 from tools.art import BANNER
 
 print(BANNER)
