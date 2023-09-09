@@ -21,6 +21,7 @@ BioShock is a Python-based program designed to monitor biomaterials using an arr
 - Python 3
 - Blinka
 - Adafruit
+- Fswebcam
 
 ## Usage
 1. Run monitoring.py
