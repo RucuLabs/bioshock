@@ -24,7 +24,6 @@ def ask_for_monitoring_name():
         if not os.path.exists(monitoring_path):
             try:
                 os.mkdir(monitoring_path)
-                os.mkdir(f"{monitoring_path}/pictures")
                 return monitoring_name, monitoring_path
             except:
                 print("Couldn't create the monitoring session folder, try again.")
