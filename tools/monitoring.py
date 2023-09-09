@@ -8,8 +8,7 @@ HEADERS = ['iteration',
             'time', 
             'temperature', 
             'humidity', 
-            'inner_temperature', 
-            'picture_name']
+            'inner_temperature']
 
 # AM2302 = adafruit_dht.DHT22(board.D18)
 # DS18X20_id = '28-3c01d607a2d3'
@@ -47,7 +46,7 @@ def start_monitoring(monitoring_name, monitoring_path, cams, resolution, num_pho
             inner_temperature = 'inner_temperature'
 
             # write the registry
-            row = [i, timestamp, temperature, humidity, inner_temperature, str(i)+'.jpg']
+            row = [i, timestamp, temperature, humidity, inner_temperature]
             writer.writerow(row)
 
             # wait for next iteration
