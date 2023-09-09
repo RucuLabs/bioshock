@@ -1,7 +1,7 @@
 import tools.ds18x20 as ds18x20
 import tools.cameras as cameras
 import board, csv, time
-import adafruit_dht
+# import adafruit_dht
 import os
 
 HEADERS = ['iteration', 
