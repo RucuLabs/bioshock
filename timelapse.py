@@ -2,7 +2,7 @@ import os
 import imageio
 
 def list_monitorings():
-    monitorings = os.listdir("monitorings")
+    monitorings = os.listdir("monitoring")
     print("Available monitorings:")
     for idx, monitoring in enumerate(monitorings, start=1):
         print(f"{idx}. {monitoring}")
