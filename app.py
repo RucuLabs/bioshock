@@ -66,10 +66,10 @@ class CameraApp(QMainWindow):
         self.selected_resolution = RESOLUTIONS_16_9.get(self.resolution_dropdown.currentText())
         self.selected_test_camera = self.camera_dropdown.currentText()
         if self.selected_resolution:
-            camera.take_picture(path="./", 
+            camera.take_picture_test(path="./", 
                                 resolution=self.selected_resolution, 
                                 cam_name=self.selected_test_camera, 
-                                filename='test_image.jpg')
+                                filename='test_image')
             pixmap = QPixmap('test_image.jpg')
             self.image_label.setPixmap(pixmap)
         else:

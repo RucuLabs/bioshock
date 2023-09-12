@@ -24,6 +24,20 @@ def take_picture(path, resolution, cam_name, filename):
     filename = f"cam{cam_number}-{filename}.jpg"
     command = f"fswebcam -d {cam_name} -r {resolution} --no-banner " + os.path.join(path, filename)
     try:
+        print(command)
+        os.system(command)
+        print(f"Webcam: Taking picture on cam{cam_number}: {filename}")
+    except:
+        print(f"Webcam: Error taking picture on cam{cam_number}: {filename}")
+
+# take_picture: path(str) resolution(str) cam_name(str) filename(str) -> void
+# takes a picture (fswebcam) from the usb webcam and saves it to path
+def take_picture_test(path, resolution, cam_name, filename):
+    cam_number = cam_name[-1]
+    filename = f"{filename}.jpg"
+    command = f"fswebcam -d {cam_name} -r {resolution} --no-banner " + os.path.join(path, filename)
+    try:
+        print(command)
         os.system(command)
         print(f"Webcam: Taking picture on cam{cam_number}: {filename}")
     except:
