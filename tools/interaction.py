@@ -1,4 +1,5 @@
 import os
+import re
 
 MONITORING_ROOT = "monitoring"
 
@@ -15,13 +16,29 @@ RESOLUTIONS_16_9 = {
     "4K": "3840x2160"
 }
 
+def is_valid_directory(directory_name):
+
+    if ' ' in directory_name:
+        return False
+
+    if not re.match(r'^[a-zA-Z0-9_-]+$', directory_name):
+        return False
+
+    try:
+        os.makedirs(os.path.join('/tmp', directory_name), exist_ok=True)
+    except OSError as e:
+        return False
+    else:
+        os.rmdir(os.path.join('/tmp', directory_name))
+        return True
+
 def ask_for_monitoring_name():
     if not os.path.exists(MONITORING_ROOT):
         os.mkdir(MONITORING_ROOT)
     while True:
         monitoring_name = input("Choose a name for your monitoring session: ")
         monitoring_path = f"{MONITORING_ROOT}/{monitoring_name}"
-        if not os.path.exists(monitoring_path):
+        if not os.path.exists(monitoring_path) and is_valid_directory(directory_name=monitoring_name):
             try:
                 os.mkdir(monitoring_path)
                 return monitoring_name, monitoring_path
