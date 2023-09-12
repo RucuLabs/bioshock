@@ -56,18 +56,31 @@ class CameraApp(QMainWindow):
 
         self.cameras = None
         self.selected_test_camera = None
+        self.selected_resolution = None
 
     def list_cameras(self):
         self.cameras = camera.detect()
         self.camera_dropdown.addItems(self.cameras)
 
     def test_selected_camera(self):
-        pass
+        self.selected_resolution = RESOLUTIONS_16_9.get(self.resolution_dropdown.currentText())
+        self.selected_test_camera = self.camera_dropdown.currentText()
+        if self.selected_resolution:
+            camera.take_picture(path="./", 
+                                resolution=self.selected_resolution, 
+                                cam_name=self.selected_test_camera, 
+                                filename='test_image.jpg')
+            pixmap = QPixmap('test_image.jpg')
+            self.image_label.setPixmap(pixmap)
+        else:
+            print('No selected resolution or camera')
 
     def update_test_image(self):
         pass
 
 if __name__ == "__main__":
+    if os.path.exists('test_image.jpg'):
+        os.remove('test_image.jpg')
     app = QApplication(sys.argv)
     window = CameraApp()
     window.show()
