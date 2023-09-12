@@ -5,6 +5,7 @@ import numpy as np
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout, QWidget, QComboBox, QLabel
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtCore import QTimer
+import tools.cameras as camera
 
 RESOLUTIONS_16_9 = {
     "360p": "640x360",
@@ -23,7 +24,7 @@ class CameraApp(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.setWindowTitle("Camera App")
+        self.setWindowTitle("BioShock: Monitoring System 4 BioMaterials")
         self.setGeometry(100, 100, 800, 600)
 
         self.central_widget = QWidget()
@@ -32,13 +33,9 @@ class CameraApp(QMainWindow):
         self.layout = QVBoxLayout()
         self.central_widget.setLayout(self.layout)
 
-        self.list_cameras_button = QPushButton("Listar Cámaras")
+        self.list_cameras_button = QPushButton("List Cameras")
         self.list_cameras_button.clicked.connect(self.list_cameras)
         self.layout.addWidget(self.list_cameras_button)
-
-        self.test_cameras_button = QPushButton("Probar Cámaras")
-        self.test_cameras_button.clicked.connect(self.test_cameras)
-        self.layout.addWidget(self.test_cameras_button)
 
         self.camera_dropdown = QComboBox()
         self.layout.addWidget(self.camera_dropdown)
@@ -47,35 +44,28 @@ class CameraApp(QMainWindow):
         self.resolution_dropdown.addItems(list(RESOLUTIONS_16_9.keys()))
         self.layout.addWidget(self.resolution_dropdown)
 
+        self.test_cameras_button = QPushButton("Test Selected Camera")
+        self.test_cameras_button.clicked.connect(self.test_selected_camera)
+        self.layout.addWidget(self.test_cameras_button)
+
         self.image_label = QLabel()
         self.layout.addWidget(self.image_label)
 
         self.timer = QTimer()
-        self.timer.timeout.connect(self.update_image)
-        self.current_camera = None
+        self.timer.timeout.connect(self.update_test_image)
+
+        self.cameras = None
+        self.selected_test_camera = None
 
     def list_cameras(self):
-        # Listar cámaras disponibles
-        cameras = [f"Camera {i}" for i in range(1, 5)]  # Supongamos 4 cámaras disponibles
-        self.camera_dropdown.addItems(cameras)
+        self.cameras = camera.detect()
+        self.camera_dropdown.addItems(self.cameras)
 
-    def test_cameras(self):
-        # Iniciar la cámara seleccionada
-        selected_camera = self.camera_dropdown.currentText()
-        if selected_camera:
-            self.current_camera = cv2.VideoCapture(0)  # Supongamos que seleccionamos la cámara 0
-            self.timer.start(30)  # Actualizar la imagen cada 30 ms
+    def test_selected_camera(self):
+        pass
 
-    def update_image(self):
-        if self.current_camera:
-            ret, frame = self.current_camera.read()
-            if ret:
-                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                height, width, channel = frame.shape
-                bytes_per_line = 3 * width
-                image = QImage(frame.data, width, height, bytes_per_line, QImage.Format_RGB888)
-                pixmap = QPixmap.fromImage(image)
-                self.image_label.setPixmap(pixmap)
+    def update_test_image(self):
+        pass
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
