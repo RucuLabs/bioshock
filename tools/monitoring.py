@@ -1,8 +1,8 @@
 import tools.ds18x20 as ds18x20
 import tools.cameras as cameras
 import csv, time
-# import board
-# import adafruit_dht
+import board
+import adafruit_dht
 import os
 
 HEADERS = ['iteration', 
@@ -11,7 +11,7 @@ HEADERS = ['iteration',
             'humidity', 
             'inner_temperature']
 
-# AM2302 = adafruit_dht.DHT22(board.D18)
+AM2302 = adafruit_dht.DHT22(board.D18)
 # DS18X20_id = '28-3c01d607a2d3'
 
 def start_monitoring(monitoring_name, monitoring_path, cams, resolution, num_photos, interval):
@@ -40,10 +40,10 @@ def start_monitoring(monitoring_name, monitoring_path, cams, resolution, num_pho
             
             # ADD SENSORS
 
-            #·humidity, temperature = AM2302.humidity, AM2302.temperature
+            humidity, temperature = AM2302.humidity, AM2302.temperature
             # inner_temperature = '{:.3f}'.format(ds18x20.gettemp(DS18X20_id)/float(1000))
-            humidity = 'humidity'
-            temperature = 'temperature'
+            # humidity = 'humidity'
+            # temperature = 'temperature'
             inner_temperature = 'inner_temperature'
 
             # write the registry
