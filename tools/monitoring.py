@@ -12,7 +12,7 @@ HEADERS = ['iteration',
             'inner_temperature']
 
 DHT_PIN = 18
-AM2302 = Adafruit_DHT.DHT22(DHT_PIN)
+DHT_SENSOR = Adafruit_DHT.DHT22
 # DS18X20_id = '28-3c01d607a2d3'
 
 def start_monitoring(monitoring_name, monitoring_path, cams, resolution, num_photos, interval):
@@ -41,7 +41,7 @@ def start_monitoring(monitoring_name, monitoring_path, cams, resolution, num_pho
             
             # ADD SENSORS
 
-            humidity, temperature = AM2302.humidity, AM2302.temperature
+            humidity, temperature = Adafruit_DHT.read(DHT_SENSOR, DHT_PIN)
             # inner_temperature = '{:.3f}'.format(ds18x20.gettemp(DS18X20_id)/float(1000))
             # humidity = 'humidity'
             # temperature = 'temperature'
