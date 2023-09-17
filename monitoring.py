@@ -7,8 +7,8 @@ from tools.art import BANNER
 print(BANNER)
 
 # detect cameras
-cams = cameras.detect()
-if not cams:
+_, working_ports, _ = cameras.list_ports()
+if not working_ports:
     print("Exiting")
     sys.exit(1)
 
@@ -18,6 +18,6 @@ num_photos, interval = interaction.ask_for_settings()
 resolution = interaction.ask_for_resolution()
 
 # start monitoring
-monitoring.start_monitoring(monitoring_path=monitoring_path, monitoring_name=monitoring_name, cams=cams, resolution=resolution, num_photos=num_photos, interval=interval)
+monitoring.start_monitoring(monitoring_path=monitoring_path, working_ports=working_ports, interval = interval)
 
 sys.exit(0)

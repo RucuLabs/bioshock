@@ -15,29 +15,23 @@ DHT_PIN = 18
 DHT_SENSOR = Adafruit_DHT.DHT22
 # DS18X20_id = '28-3c01d607a2d3'
 
-def start_monitoring(monitoring_name, monitoring_path, cams, resolution, num_photos, interval):
+def start_monitoring(monitoring_path, working_ports, interval):
     data_path = f'{monitoring_path}/data.csv'
-    pictures_path = f'{monitoring_path}/pictures/'
-    
-    # create a folder for each camera (pictures)
-    cam_names = []
-    for cam in cams:
-        cam_name = cam.split('/')[2]
-        cam_names.append(cam_name)
-        os.mkdir(f"{monitoring_path}/{cam_name}/")
+    pictures_path = f'{monitoring_path}/pictures'
     
     # open the data csv
     with open(data_path, 'w', newline='') as data_file:
         writer = csv.writer(data_file)
         writer.writerow(HEADERS)
+
+        i = 0
         
         # create a registry for the requested ammount of iterations
-        for i in range(num_photos):
+        while True:
+
             timestamp = time.strftime("%Y%m%d-%H%M%S")
             
-            # take a picture on each available camera
-            for idx, cam in enumerate(cams):
-                cameras.take_picture(f"{monitoring_path}/{cam_names[idx]}/", resolution, cam, str(i))
+            cameras.capture_images(working_ports=working_ports, pictures_path=pictures_path, picture_name=str(i))
             
             # ADD SENSORS
 
@@ -50,6 +44,8 @@ def start_monitoring(monitoring_name, monitoring_path, cams, resolution, num_pho
             # write the registry
             row = [i, timestamp, temperature, humidity, inner_temperature]
             writer.writerow(row)
+
+            i += 1
 
             # wait for next iteration
             time.sleep(interval)
