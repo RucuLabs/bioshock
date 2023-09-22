@@ -1,7 +1,6 @@
 import tools.ds18x20 as ds18x20
 import tools.cameras as cameras
 import csv, time
-# import board
 import Adafruit_DHT
 import os
 
