@@ -1,87 +1,147 @@
-import os
 import sys
-# import cv2
-import numpy as np
-from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout, QWidget, QComboBox, QLabel
-from PyQt5.QtGui import QImage, QPixmap
-from PyQt5.QtCore import QTimer
-import tools.cameras as camera
+import os
+import re
+from PyQt5.QtCore import Qt, QObject, pyqtSignal, QTimer
+from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout, QWidget, QLineEdit, QMessageBox, QListWidget
 
-RESOLUTIONS_16_9 = {
-    "360p": "640x360",
-    "480p": "854x480",
-    "540p": "960x540",
-    "576p": "1024x576",
-    "720p": "1280x720",
-    "768p": "1366x768",
-    "900p": "1600x900",
-    "FullHD": "1920x1080",
-    "1440p": "2560x1440",
-    "4K": "3840x2160"
-}
+import tools.cameras as cameras
+import tools.interaction as interaction
+import tools.monitoring as monitoring
+from tools.art import BANNER
 
-class CameraApp(QMainWindow):
+class Worker(QObject):
+    finished = pyqtSignal()
+
+    def __init__(self, interval, project_name, available_ports):
+        super().__init__()
+        self.running = False
+        self.interval = interval
+        self.project_name = project_name
+        self.available_ports = available_ports
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.run)
+
+    def start(self):
+        self.running = True
+        self.timer.start(self.interval * 1000)
+
+    def stop(self):
+        self.running = False
+        self.timer.stop()
+        self.finished.emit()
+
+    def run(self):
+        
+        print("Proyecto:", self.project_name)
+        print("Puertos disponibles:", self.available_ports)
+        # Tu código de captura de fotos y procesamiento aquí
+        pass
+
+def is_valid_project_name(name):
+    return re.match(r'^[a-zA-Z0-9_-]+$', name)
+
+class MyWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.setWindowTitle("BioShock: Monitoring System 4 BioMaterials")
-        self.setGeometry(100, 100, 800, 600)
+        self.worker = None
+        self.available_ports = []
 
-        self.central_widget = QWidget()
-        self.setCentralWidget(self.central_widget)
+        self.initUI()
 
-        self.layout = QVBoxLayout()
-        self.central_widget.setLayout(self.layout)
+    def initUI(self):
+        self.setWindowTitle('Detener ciclo while')
+        self.setGeometry(100, 100, 400, 200)
 
-        self.list_cameras_button = QPushButton("List Cameras")
-        self.list_cameras_button.clicked.connect(self.list_cameras)
-        self.layout.addWidget(self.list_cameras_button)
+        layout = QVBoxLayout()
 
-        self.camera_dropdown = QComboBox()
-        self.layout.addWidget(self.camera_dropdown)
+        self.start_button = QPushButton('Iniciar')
+        self.start_button.clicked.connect(self.start_worker)
+        layout.addWidget(self.start_button)
 
-        self.resolution_dropdown = QComboBox()
-        self.resolution_dropdown.addItems(list(RESOLUTIONS_16_9.keys()))
-        self.layout.addWidget(self.resolution_dropdown)
+        self.stop_button = QPushButton('Detener')
+        self.stop_button.clicked.connect(self.stop_worker)
+        layout.addWidget(self.stop_button)
 
-        self.test_cameras_button = QPushButton("Test Selected Camera")
-        self.test_cameras_button.clicked.connect(self.test_selected_camera)
-        self.layout.addWidget(self.test_cameras_button)
+        self.update_ports_button = QPushButton('Actualizar Puertos')
+        self.update_ports_button.clicked.connect(self.update_ports)
+        layout.addWidget(self.update_ports_button)
 
-        self.image_label = QLabel()
-        self.layout.addWidget(self.image_label)
+        self.interval_input = QLineEdit()
+        self.interval_input.setPlaceholderText('Intervalo (segundos)')
+        layout.addWidget(self.interval_input)
 
-        self.timer = QTimer()
-        self.timer.timeout.connect(self.update_test_image)
+        self.project_name_input = QLineEdit()
+        self.project_name_input.setPlaceholderText('Nombre del Proyecto (sin espacios)')
+        layout.addWidget(self.project_name_input)
 
-        self.cameras = None
-        self.selected_test_camera = None
-        self.selected_resolution = None
+        self.ports_list = QListWidget()
+        layout.addWidget(self.ports_list)
 
-    def list_cameras(self):
-        self.cameras = camera.detect()
-        self.camera_dropdown.addItems(self.cameras)
+        container = QWidget()
+        container.setLayout(layout)
+        self.setCentralWidget(container)
 
-    def test_selected_camera(self):
-        self.selected_resolution = RESOLUTIONS_16_9.get(self.resolution_dropdown.currentText())
-        self.selected_test_camera = self.camera_dropdown.currentText()
-        if self.selected_resolution:
-            camera.take_picture_test(path="./", 
-                                resolution=self.selected_resolution, 
-                                cam_name=self.selected_test_camera, 
-                                filename='test_image')
-            pixmap = QPixmap('test_image.jpg')
-            self.image_label.setPixmap(pixmap)
-        else:
-            print('No selected resolution or camera')
+        self.update_ports()
 
-    def update_test_image(self):
+    def update_ports(self):
+        _, self.available_ports, _ = cameras.list_ports()
+        self.ports_list.clear()
+        self.ports_list.addItems([str(port) for port in self.available_ports])
+
+    def start_worker(self):
+        interval_text = self.interval_input.text()
+        project_name = self.project_name_input.text()
+        
+        try:
+            interval = int(interval_text)
+            if interval <= 0:
+                raise ValueError()
+        except ValueError:
+            # El valor no es un número positivo válido
+            return
+
+        if not is_valid_project_name(project_name):
+            QMessageBox.critical(self, 'Error', 'El nombre del proyecto no es válido.')
+            return
+
+        monitoring_path = f"./monitoring/{project_name}"
+        if os.path.exists(project_name):
+            QMessageBox.critical(self, 'Error', 'El proyecto "{}" ya existe.'.format(project_name))
+            return
+
+        if self.worker:
+            self.worker.stop()
+
+        self.worker = Worker(interval, project_name, self.available_ports)
+        self.worker.finished.connect(self.worker_finished)
+        self.worker.start()
+        self.start_button.setEnabled(False)
+        self.stop_button.setEnabled(True)
+        self.interval_input.setEnabled(False)
+        self.project_name_input.setEnabled(False)
+
+    def stop_worker(self):
+        if self.worker:
+            self.worker.stop()
+            self.worker = None
+        self.start_button.setEnabled(True)
+        self.stop_button.setEnabled(False)
+        self.interval_input.setEnabled(True)
+        self.project_name_input.setEnabled(True)
+
+    def worker_finished(self):
         pass
 
-if __name__ == "__main__":
-    if os.path.exists('test_image.jpg'):
-        os.remove('test_image.jpg')
+if __name__ == '__main__':
+    print(BANNER)
+
+    _, working_ports, _ = cameras.list_ports()
+    if not working_ports:
+        print("Exiting")
+        sys.exit(1)
+
     app = QApplication(sys.argv)
-    window = CameraApp()
+    window = MyWindow()
     window.show()
     sys.exit(app.exec_())
