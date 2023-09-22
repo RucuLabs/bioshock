@@ -35,7 +35,7 @@ def start_monitoring(monitoring_path, working_ports, interval):
             # ADD SENSORS
 
             humidity, temperature = Adafruit_DHT.read(DHT_SENSOR, DHT_PIN)
-            # inner_temperature = '{:.3f}'.format(ds18x20.gettemp(DS18X20_id)/float(1000))
+            inner_temperature = '{:.3f}'.format(ds18x20.gettemp()/float(1000))
             # humidity = 'humidity'
             # temperature = 'temperature'
             inner_temperature = 'inner_temperature'
