@@ -38,7 +38,7 @@ def start_monitoring(monitoring_path, working_ports, interval):
             inner_temperature = '{:.3f}'.format(ds18x20.gettemp()/float(1000))
             # humidity = 'humidity'
             # temperature = 'temperature'
-            inner_temperature = 'inner_temperature'
+            # inner_temperature = 'inner_temperature'
 
             # write the registry
             row = [i, timestamp, temperature, humidity, inner_temperature]
