@@ -11,6 +11,7 @@ def list_ports():
     dev_port = 0
     working_ports = []
     available_ports = []
+    supported_resolutions = []
     while len(non_working_ports) < MAX_CAM_PORTS:
         camera = cv2.VideoCapture(dev_port)
         if not camera.isOpened():
@@ -23,11 +24,12 @@ def list_ports():
             if is_reading:
                 print("Port %s is working and reads images (%s x %s)" %(dev_port,h,w))
                 working_ports.append(dev_port)
+                supported_resolutions.append(f"{int(w)}x{int(h)}")
             else:
                 print("Port %s for camera ( %s x %s) is present but does not reads." %(dev_port,h,w))
                 available_ports.append(dev_port)
         dev_port +=1
-    return available_ports,working_ports,non_working_ports
+    return available_ports, working_ports, non_working_ports, supported_resolutions
 
 def capture_images(working_ports, pictures_path, picture_name):
 
