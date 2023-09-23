@@ -1,14 +1,15 @@
 import sys
 import os
 import re
+
 from PyQt5.QtCore import Qt, QObject, pyqtSignal, QTimer
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout, QWidget, QLineEdit, QMessageBox, QListWidget
 
 import tools.cameras as cameras
-import tools.interaction as interaction
 import tools.monitoring as monitoring
 from tools.art import BANNER
 
+WINDOW_TITLE = "BioShock: Monitoring System for Biomaterials"
 class Worker(QObject):
     finished = pyqtSignal()
 
@@ -50,6 +51,7 @@ class MyWindow(QMainWindow):
         self.initUI()
 
     def initUI(self):
+
         self.setWindowTitle('Detener ciclo while')
         self.setGeometry(100, 100, 400, 200)
 
