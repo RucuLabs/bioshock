@@ -1,7 +1,7 @@
 import os, subprocess
 import cv2
 
-MAX_CAM_PORTS = 10
+MAX_CAM_PORTS = 4
 
 def list_ports():
     """
