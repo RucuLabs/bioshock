@@ -39,6 +39,8 @@ def capture_images(working_ports, pictures_path, picture_name):
         os.makedirs(port_path, exist_ok=True)
 
         camera = cv2.VideoCapture(port)
+        camera.set(cv2.CAP_PROP_BRIGHTNESS, 1)
+        camera.set(cv2.CAP_PROP_EXPOSURE, 1)
         # camera.set(cv2.CAP_PROP_FRAME_WIDTH, w)
         # camera.set(cv2.CAP_PROP_FRAME_HEIGHT, h)
 
