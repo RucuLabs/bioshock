@@ -6,13 +6,10 @@ import Adafruit_DHT
 HEADERS = ['iteration', 
             'time', 
             'temperature', 
-            'humidity', 
-            'inner_temperature',
-            'inner_temperature2']
+            'humidity']
 
 # DHT_PIN = 18
 # DHT_SENSOR = Adafruit_DHT.DHT22
-# DS18X20_id = '28-3c01d607a2d3'
 DS18X20_ids = ds18x20.getTempSensors()
 
 def monitoring_cycle(monitoring_path, working_ports, iteration):
@@ -26,9 +23,13 @@ def monitoring_cycle(monitoring_path, working_ports, iteration):
             
     # ADD SENSORS
     # humidity, temperature = Adafruit_DHT.read(DHT_SENSOR, DHT_PIN)
-    inner_temperature = '{:.3f}'.format(ds18x20.gettemp()[0]/float(1000))
-    inner_temperature2 = '{:.3f}'.format(ds18x20.gettemp()[1]/float(1000))
-    
+
+    # ds13x20 sensosrs
+    in_temps = []
+    for i in ds18x20.gettemp():
+        HEADERS.append(f'in_temp_{i}')
+        in_temps.append('{:.3f}'.format(ds18x20.gettemp()[i]/float(1000)))
+      
     humidity = '0'
     temperature = '0'
     # inner_temperature = '0'
@@ -45,8 +46,7 @@ def monitoring_cycle(monitoring_path, working_ports, iteration):
                     'time' : timestamp, 
                     'temperature' : temperature, 
                     'humidity' : humidity, 
-                    'inner_temperature' : inner_temperature,
-                    'inner_temperature2' : inner_temperature2
         } 
-        
+        for i in range(len(in_temps)):
+            row[f'in_temp_{i}'] = in_temps[i]
         writer_csv.writerow(row)
