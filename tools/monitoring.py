@@ -26,7 +26,7 @@ def monitoring_cycle(monitoring_path, working_ports, iteration):
 
     # ds13x20 sensosrs
     in_temps = []
-    for i in ds18x20.gettemp():
+    for i in range(len(ds18x20.gettemp())):
         HEADERS.append(f'in_temp_{i}')
         in_temps.append('{:.3f}'.format(ds18x20.gettemp()[i]/float(1000)))
       
