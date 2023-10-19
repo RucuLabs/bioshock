@@ -2,13 +2,13 @@ import tools.ds18x20 as ds18x20
 import tools.cameras as cameras
 import csv, time
 import Adafruit_DHT
-import stemma
+import tools.stemma as stemma
 
 HEADERS = ['iteration', 
             'time', 
             'temperature', 
             'humidity',
-            'inner_humidity' 
+            'inner_humidity' ,
             'inner_temperature',
             'inner_temperature2']
 
@@ -42,8 +42,8 @@ def monitoring_cycle(monitoring_path, working_ports, iteration):
     inner_temperature = '{:.3f}'.format(ds18x20.gettemp()[0]/float(1000))
     inner_temperature2 = '{:.3f}'.format(ds18x20.gettemp()[1]/float(1000))
     
-    # inner_humidity = stemma.read_humidity()
-    inner_humidity = 0
+    inner_humidity = stemma.read_humidity()
+    #inner_humidity = 0
     humidity = '0'
     temperature = '0'
     # inner_temperature = '0'
