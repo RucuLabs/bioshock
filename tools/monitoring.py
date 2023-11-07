@@ -42,9 +42,13 @@ def monitoring_cycle(monitoring_path, working_ports, iteration):
     in_temps = []
     for i in range(len(ds18x20.gettemp())):
         in_temps.append('{:.3f}'.format(ds18x20.gettemp()[i]/float(1000)))
-      
-    humidity = '0'
-    temperature = '0'
+    
+    try:
+        humidity = stemma.read_humidity()
+        temperature = stemma.read_temp()
+    except:
+        humidity = '0'
+        temperature = '0'
     # inner_temperature = '0'
     timestamp = time.strftime("%d%m%Y-%H%M%S")
 
