@@ -17,7 +17,7 @@ def gettemp():
       line = f.readline() # read 2nd line
       mytemp = line.rsplit('t=',1)
     else:
-      mytemp = 123456789
+      mytemp = -1
     f.close()
     temperatures.append(int(mytemp[1]))
 

@@ -7,14 +7,12 @@ import tools.stemma as stemma
 HEADERS = ['iteration', 
             'time', 
             'temperature', 
-            'humidity',
-            'inner_humidity' ,
-            'inner_temperature',
-            'inner_temperature2']
+            'humidity']
+for i in range(len(ds18x20.gettemp())):
+    HEADERS.append(f'in_temp_{i}')
 
 # DHT_PIN = 18
 # DHT_SENSOR = Adafruit_DHT.DHT22
-# DS18X20_id = '28-3c01d607a2d3'
 DS18X20_ids = ds18x20.getTempSensors()
 
 # Se intenta inicializar el sensor de humedad, deberia funcionar con blinka y siguiendo el esquema de conexion mostrado en 
@@ -39,11 +37,12 @@ def monitoring_cycle(monitoring_path, working_ports, iteration):
             
     # ADD SENSORS
     # humidity, temperature = Adafruit_DHT.read(DHT_SENSOR, DHT_PIN)
-    inner_temperature = '{:.3f}'.format(ds18x20.gettemp()[0]/float(1000))
-    inner_temperature2 = '{:.3f}'.format(ds18x20.gettemp()[1]/float(1000))
-    
-    inner_humidity = stemma.read_humidity()
-    #inner_humidity = 0
+
+    # ds13x20 sensosrs
+    in_temps = []
+    for i in range(len(ds18x20.gettemp())):
+        in_temps.append('{:.3f}'.format(ds18x20.gettemp()[i]/float(1000)))
+      
     humidity = '0'
     temperature = '0'
     # inner_temperature = '0'
@@ -60,9 +59,7 @@ def monitoring_cycle(monitoring_path, working_ports, iteration):
                     'time' : timestamp, 
                     'temperature' : temperature, 
                     'humidity' : humidity, 
-                    'inner_humidity' : inner_humidity,
-                    'inner_temperature' : inner_temperature,
-                    'inner_temperature2' : inner_temperature2
         } 
-        
+        for i in range(len(in_temps)):
+            row[f'in_temp_{i}'] = in_temps[i]
         writer_csv.writerow(row)
