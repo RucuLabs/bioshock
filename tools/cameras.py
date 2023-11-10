@@ -31,6 +31,12 @@ def list_ports():
         dev_port +=1
     return available_ports, working_ports, non_working_ports, supported_resolutions
 
+def adjust_brightness(image, alpha=1.0, beta=0.0):
+    # alpha: contrast, 1.0 is normal
+    # beta: brigthness, 0.0 is normal
+    adjusted_image = cv2.convertScaleAbs(image, alpha=alpha, beta=beta)
+    return adjusted_image
+
 def capture_images(working_ports, pictures_path, picture_name):
 
     for port in working_ports:
@@ -39,8 +45,8 @@ def capture_images(working_ports, pictures_path, picture_name):
         os.makedirs(port_path, exist_ok=True)
 
         camera = cv2.VideoCapture(port)
-        camera.set(cv2.CAP_PROP_BRIGHTNESS, 1)
-        camera.set(cv2.CAP_PROP_EXPOSURE, 1)
+        # camera.set(cv2.CAP_PROP_BRIGHTNESS, 1)
+        # camera.set(cv2.CAP_PROP_EXPOSURE, 1)
         # camera.set(cv2.CAP_PROP_FRAME_WIDTH, w)
         # camera.set(cv2.CAP_PROP_FRAME_HEIGHT, h)
 
@@ -50,12 +56,15 @@ def capture_images(working_ports, pictures_path, picture_name):
 
         ret, frame = camera.read()
         if ret:
+            adjusted_frame = adjust_brightness(frame, alpha=0.8, beta=0)
+
             picture_file_name = f"{picture_name}.jpg"
             image_path = os.path.join(port_path, picture_file_name)
-            cv2.imwrite(image_path, frame)
-            print(f"Captured image: {image_path}")
+            cv2.imwrite(image_path, adjusted_frame)
+            print(f"Captured and adjusted image: {image_path}")
         else:
             print(f"Can't take picture at /video{str(port)}")
+
 
         camera.release()
 
