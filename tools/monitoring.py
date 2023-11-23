@@ -6,13 +6,15 @@ import tools.stemma as stemma
 
 HEADERS = ['iteration', 
             'time', 
-            'temperature', 
-            'humidity']
+            'temperature',
+            'humidity',
+            'inner_temperature', 
+            'inner_humidity']
 for i in range(len(ds18x20.gettemp())):
     HEADERS.append(f'in_temp_{i}')
 
-# DHT_PIN = 18
-# DHT_SENSOR = Adafruit_DHT.DHT22
+DHT_PIN = 18
+DHT_SENSOR = Adafruit_DHT.DHT22
 DS18X20_ids = ds18x20.getTempSensors()
 
 # Se intenta inicializar el sensor de humedad, deberia funcionar con blinka y siguiendo el esquema de conexion mostrado en 
@@ -36,7 +38,10 @@ def monitoring_cycle(monitoring_path, working_ports, iteration):
     cameras.capture_images(working_ports=working_ports, pictures_path=pictures_path, picture_name=iteration)
             
     # ADD SENSORS
-    # humidity, temperature = Adafruit_DHT.read(DHT_SENSOR, DHT_PIN)
+    try:
+        humidity, temperature = Adafruit_DHT.read(DHT_SENSOR, DHT_PIN)
+    except:
+        humidity, temperature = '0'
 
     # ds13x20 sensosrs
     in_temps = []
@@ -44,11 +49,11 @@ def monitoring_cycle(monitoring_path, working_ports, iteration):
         in_temps.append('{:.3f}'.format(ds18x20.gettemp()[i]/float(1000)))
     
     try:
-        humidity = stemma.read_humidity()
-        temperature = stemma.read_temp()
+        inner_humidity = stemma.read_humidity()
+        inner_temperature = stemma.read_temp()
     except:
-        humidity = '0'
-        temperature = '0'
+        inner_humidity = '0'
+        inner_temperature = '0'
     # inner_temperature = '0'
     timestamp = time.strftime("%d%m%Y-%H%M%S")
 
@@ -63,6 +68,8 @@ def monitoring_cycle(monitoring_path, working_ports, iteration):
                     'time' : timestamp, 
                     'temperature' : temperature, 
                     'humidity' : humidity, 
+                    'inner_temperature' : inner_temperature,
+                    'inner_humidity' : inner_humidity,
         } 
         for i in range(len(in_temps)):
             row[f'in_temp_{i}'] = in_temps[i]
